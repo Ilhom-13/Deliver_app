@@ -1,1 +1,147 @@
+{% extends 'food/base.html' %}
+{% block title %}
+Dashboard
+{% endblock title %}
+{% block content %}
+   <div style="float:right; margin-right:95px; width:200px">
+    <div class="ml-15">
+      <h5 class="text-primary" >Order History</h5>
+      <input id="hide" onclick="Myfunction()" type="button" value="hide" class="btn btn-sm btn-light text-primary"/>
+    </div>
+    <aside id="sidebar"  style="margin-right:25px; margin-top:15px; background-color:rgb(180,180,180); width:150px;">
+      <div class="text-center">
+        {% for date in dates %}
+        <div>
+          <a href="{% url 'accounts:dashboard' date.year date|date:'M' date.day %}">
+            <h6 class="text-center text-primary">{{date|date:"M d, Y"}}</h6>
+          </a>
+        </div>
+            {% endfor %}
+        </div>
+    </aside>
+   </div>
+    <div class="album w-75 py-3 mx-5 bg-light" >
+        {% if restaurant %}
+        <div class="container my-5 mx-7">
+        <a href="{% url 'food:category-add' %}">
+            <button type="button" class="btn btn-outline-primary">Add Categories</button>
+        </a>
+        <a href="{% url 'food:item-add' %}">
+            <button type="button" class="btn btn-outline-primary">Add Items</button>
+        </a>
+        <a href="{% url 'food:items-for-deletion' %}">
+            <button type="button" class="btn btn-outline-danger">Delete Items</button>
+        </a>
+        <a style="float:right" href="{% url 'food:restaurant-items-info' restaurant.slug %}">
+            <button type="button" class="btn btn-outline-primary">Items Info</button>
+        </a>
+        </div>
 
+
+        <div class="container">
+          <h3 class="text-center"><b>My Orders</b></h3>
+            <div class="row">
+             <table style="width:100%" class="my-5">
+                <tbody>
+                 <tr style="border-bottom: 2px solid black">
+                     <th>Customer</th>
+                     <th>Products</th>
+                     <th>Date</th>
+                     <th>Total price</th>
+                     <th>Adress</th>
+                     <th>Contact</th>
+                     <th>Status</th>
+                     <th>Update</th>
+                 </tr>
+                 {% for order in orders %}
+                 <tr style="border-bottom: 2px solid black;">
+                     <td>{{order.user.user_name}}</td>
+                     <td>{{order.all_items}}</td>
+                     <td>{{order.date|date:"j F, Y | H:i"}}</td>
+                     <td>{{order.total_price}} $</td>
+                     <td>{{order.adress}}</td>
+                     <td>{{order.phone}}</td>
+                     <td>{{order.status}}</td>
+                     {% if order.status != 'done' %}
+                     <td>
+                        <form method="post" action="{% url 'food:order-update' order.id %}" style="display:inline-block;" id="myform">
+                           {% csrf_token %}
+                           <input type="submit"  class="btn btn-primary" name="ready" value="Ready">
+                         </form>
+                         <form method="post" action="{% url 'food:order-update' order.id %}" style="display:inline-block;" id="form">
+                           {% csrf_token %}
+                           <input type="submit" class="btn btn-secondary" name="cancel" value="Cancel">
+                         </form>
+                     </td>
+                     {% else %}
+                     <td>finished</td>
+                     {% endif %}
+                 {% endfor %}
+             </table>
+            </div>
+        </div>
+         {% else %}
+         <div class="container">
+           <h3 class="text-center"><b>My Orders</b></h3>
+            <div class="row">
+              <table style="width:100%" class="my-5">
+                <tbody>
+                  <tr style="border-bottom: 2px solid black">
+                     <th>Products</th>
+                     <th>Restaurant</th>
+                     <th>Total price</th>
+                     <th>Restaurant Contact</th>
+                     <th>Adress</th>
+                     <th>Date</th>
+                     <th>Status</th>
+                     <th>Update</th>
+                  </tr>
+                {% for order in orders %}
+
+                  <tr style="border-bottom: 2px solid black;">
+                     <td>{{order.all_items}}</td>
+                     <td>{{order.get_item_owner}}</td>
+                     <td>{{order.total_price}} $</td>
+                     <td>{{order.get_item_owner.contact}}</td>
+                     <td>{{order.adress}}</td>
+                     <td>{{order.date|date:"j F, Y | H:i"}}</td>
+                     <td>{{order.status}}</td>
+                     {% if order.status != 'done' %}
+                     <td>
+                        <form method="post" action="{% url 'food:order-update' order.id %}" style="display:inline-block;" id="myform">
+                             {% csrf_token %}
+                             <input type="submit"  class="btn btn-primary" name="ready" value="Ready">
+                         </form>
+
+                         <form method="post" action="{% url 'food:order-update' order.id %}" style="display:inline-block;" id="form">
+                             {% csrf_token %}
+                             <input type="submit" class="btn btn-secondary" name="cancel" value="Cancel">
+                         </form>
+                     </td>
+                     {% else %}
+                     <td>finished</td>
+                     {% endif %}
+                {% endfor %}
+              </table>
+             {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+function Myfunction () {
+    var aside = document.getElementById("sidebar");
+    if (aside.style.display !== "none") {
+        aside.style.display = "none";
+        document.getElementById("hide").value = "show";
+    } else {
+      aside.style.display = "block";
+      document.getElementById("hide").value = "hide";
+    }
+}
+
+</script>
+
+{% endblock content %}
