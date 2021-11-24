@@ -1,0 +1,58 @@
+
+{% extends 'food/base.html' %}
+{% block title %}
+Dashboard
+{% endblock title %}
+{% block content %}
+{% if orders|length > 0 %}
+ <table style="width:100%" class="my-5">
+             <tbody>
+             <tr style="border-bottom: 2px solid black">
+                 <th>Products</th>
+                 <th>Restaurant</th>
+                 <th>Total price</th>
+                 <th>Restaurant Contact</th>
+                 <th>Adress</th>
+                 <th>Date</th>
+                 <th>Status</th>
+                 <th>Update</th>
+             </tr>
+             {% for order in orders %}
+             {% if order.status != 'done' %}
+             <tr style="border-bottom: 2px solid black;">
+                 <td>{{order.all_items}}</td>
+                 <td>{{order.get_item_owner}}</td>
+                 <td>{{order.total_price}} $</td>
+                 <td>{{order.get_item_owner.contact}}</td>
+                 <td>{{order.adress}}</td>
+                 <td>{{order.date|date:"j F, Y | H:i"}}</td>
+                 <td>{{order.status}}</td>
+                 <td>
+                    <form method="post" action="{% url 'food:order-update' order.id %}" style="display:inline-block;" id="myform">
+                         {% csrf_token %}
+                         <input type="submit"  class="btn btn-primary" name="ready" value="Ready">
+                     </form>
+
+                     <form method="post" action="{% url 'food:order-update' order.id %}" style="display:inline-block;" id="form">
+                         {% csrf_token %}
+                         <input type="submit" class="btn btn-secondary" name="cancel" value="Cancel">
+                     </form>
+                 </td>
+                 {% else %}
+                 <tr style="border-bottom: 2px solid black;">
+                     <td><del>{{order.all_items}}</del></td>
+                     <td><del>{{order.get_item_owner}}</del></td>
+                     <td><del>{{order.total_price}} $</del></td>
+                     <td><del>{{order.get_item_owner.contact}}</del></td>
+                     <td><del>{{order.adress}}</del></td>
+                     <td><del>{{order.date|date:"j F, Y | H:i"}}</del></td>
+                     <td><del>{{order.status}}</del></td>
+                     <td><del>{{order.user}}</del></td>
+                 </tr>
+                 {% endif %}
+             {% endfor %}
+         </table>
+{% else %}
+No orders
+{% endif %}
+{% endblock content %}
