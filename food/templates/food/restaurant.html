@@ -1,0 +1,45 @@
+{% extends 'food/base.html' %}
+
+{% block title %}
+{{restaurant}}
+{% endblock title %}
+{% block content %}
+  <div class="my-3 mx-5 bg-secondary sticky-top"
+       style="height:30px;top:68px;z-index:30;">
+      <h5 class="mx-5" style="color:white">{{restaurant}}</h5>
+  </div>
+{% for category in categories %}
+{% if category.items.all|length > 0 %}
+  <div class="my-3 mx-5 bg-secondary sticky-top"
+       style="height:30px;top:99px;z-index:30;">
+    <a href="{% url 'food:category' category.name|lower %}">
+      <h5 class="mx-5" style="color:white">{{category}}</h5>
+    </a>
+  </div>
+    <div class="album py-5 my-3 mx-5 bg-light">
+        <div class="container">
+
+            <div class="row">
+        {% for item in items %}
+        {% if item.category.name == category.name %}
+            <div class="col-md-4">
+                <a class="text-dark" href="{{ item.get_absolute_url }}">
+                   <div class="card mb-4 box-shadow">
+                       <img class="card-img-top" src="{{ item.image.url }}" alt="{{ item.name }}">
+                       <div class="card-only">
+                           <h2 style="font-size:18px;font-weight:bold;margin:15px" class="d-inline-flex">
+                               {{ item.name }} : {{item.price}} $
+                           </h2>
+                       </div>
+                   </div>
+                </a>
+            </div>
+        {% endif %}
+        {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endfor %}
+
+{% endblock content %}
