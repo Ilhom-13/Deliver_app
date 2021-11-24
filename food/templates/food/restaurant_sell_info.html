@@ -1,0 +1,42 @@
+{% extends 'food/base.html' %}
+{% load mathfilters %}
+
+{% block title %}
+    Items Info
+{% endblock title %}
+
+{% block content %}
+<main class=" mx-5">
+  <h2 class="text-center my-5">Items Info</h2>
+  <div class="container">
+    {% for item in items %}
+    <div  class="row mb-4 border product-item">
+      <div class="col-md-3 col-lg-2 order-md-first bg-light">
+        <a href="{{item.get_absolute_url}}">
+          <img class="img-fluid mx-auto d-block" width="120px" alt="Responsive image" src="{{ item.image.url }}">
+        </a>
+      </div>
+      <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
+        <a href="{% url 'food:restaurant' item.owner.slug %}" class="text-decoration-none text-reset">
+        </a>
+        <div class="border">
+          <div class="col border-bottom">
+            <div class="row p-3">
+              <div class="col-6 d-flex-inline">Name : {{item.name}}</div>
+              <div class="col-6 ">Price : {{item.price}} $</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row p-3">
+              <div class="col-6 d-inline-flex">Sold : {{item.num_of_sold}} times</div>
+                <div class="col-6">
+                  Total paid : {{ item.price|mul:item.num_of_sold }} $
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+{% endblock %}

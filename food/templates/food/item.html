@@ -1,0 +1,43 @@
+{% extends 'food/base.html' %}
+
+{% block title %}
+    {{item.name}}
+{% endblock title %}
+{% block content %}
+
+
+<div class="container my-3 mx-5">
+    <main class="pt-5 ">
+        <div class="row g-3">
+            <div class="col-md-5 col-lg-5 order-md-first bg-light">
+                <img class="img-fluid mx-auto card-img-top d-block" width="200px" alt="Responsive image" src="{{ item.image.url }}">
+            </div>
+            <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
+                <h1 class="mb-0 h4">{{ item.name }}</h1>
+                <p><span class="lead">{{ item.owner }}</span> (Restaurant)</p>
+
+                <div class="border">
+                    <div class="col border-bottom">
+                        <div class="row p-3">
+                            <div class="col-6">Price</div>
+                            <div class="col-6 text-end"><span class="h4 fw-bold">{{ item.price }} $</span></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+
+                              <form method="post" action="{% url 'basket:basket-add' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" id="add-button" value="{{item.id}}" style="float:right"class="btn m-2 btn-primary btn-sm">Add to basket</button>
+                               </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+{% endblock content %}
